@@ -3,35 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>لوحة النقاط القرآنية</title>
+  <title>نظام التقييم القرآني - رجال مؤمنون</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lateef:wght@400;500;600;700&display=swap');
+    
     :root {
-      --primary: #2a5f5e;
-      --primary-light: #87b6b5;
-      --secondary: rgba(255, 255, 255, 0.9);
+      --primary: #1a5f5a;
+      --primary-dark: #0d4a45;
+      --primary-light: #2d8c85;
+      --gold: #d4af37;
+      --gold-light: #f1e5ac;
+      --secondary: rgba(255, 255, 255, 0.95);
       --text: #2d3436;
+      --text-light: #5c6b72;
       --shadow: rgba(0,0,0,0.1);
-      --radius: 8px;
-      --gap: 1rem;
+      --radius: 10px;
+      --gap: 1.2rem;
+      --transition: all 0.3s ease-in-out;
     }
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
       margin: 0;
-      font-family: 'Cairo', sans-serif;
+      font-family: 'Tajawal', sans-serif;
       min-height: 100vh;
       background: 
-        linear-gradient(45deg, rgba(42, 95, 94, 0.1), rgba(135, 182, 181, 0.1)),
-        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><path fill="%232a5f5e" opacity="0.1" d="M50 0L100 50 50 100 0 50 50 0zM0 0l50 50L0 100zm100 0L50 50l50 50z"/></svg>');
-      background-size: cover;
+        url('https://i.ibb.co/7Yk1Z0q/quran-bg.jpg') center/cover no-repeat fixed,
+        linear-gradient(135deg, rgba(26, 95, 90, 0.9), rgba(13, 74, 69, 0.95));
       color: var(--text);
       position: relative;
       overflow-x: hidden;
+      line-height: 1.6;
     }
 
     body::before {
@@ -41,14 +51,11 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 24px,
-        rgba(42, 95, 94, 0.05) 24px,
-        rgba(42, 95, 94, 0.05) 25px
-      );
+      background: 
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50%" y="50%" font-family="Arial" font-size="10" fill="rgba(255,255,255,0.05)" text-anchor="middle" dominant-baseline="middle">﷽</text></svg>'),
+        linear-gradient(to bottom, rgba(13, 74, 69, 0.7), rgba(26, 95, 90, 0.5));
       z-index: -1;
+      opacity: 0.8;
     }
 
     .app {
@@ -57,24 +64,56 @@
       backdrop-filter: blur(2px);
     }
 
+    /* الشريط الجانبي */
     .sidebar {
-      width: 260px;
+      width: 300px;
       flex-shrink: 0;
-      background: var(--secondary);
-      box-shadow: 2px 0 8px var(--shadow);
-      border-left: 1px solid rgba(42, 95, 94, 0.1);
+      background: rgba(26, 95, 90, 0.9);
+      box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+      border-left: 1px solid var(--gold);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="80%" y="20%" font-family="Arial" font-size="14" fill="rgba(255,255,255,0.03)" text-anchor="middle">﷽</text></svg>');
+      opacity: 0.1;
+      pointer-events: none;
     }
 
     .sidebar h2 {
       margin: 0;
       padding: var(--gap);
-      background: var(--primary);
-      color: #fff;
+      background: linear-gradient(to right, var(--primary-dark), var(--primary));
+      color: var(--gold-light);
       text-align: center;
-      font-weight: 600;
-      font-size: 1.5rem;
+      font-weight: 700;
+      font-size: 1.8rem;
       letter-spacing: 1px;
-      border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+      border-bottom: 2px solid var(--gold);
+      font-family: 'Lateef', serif;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar h2::after {
+      content: 'رجال مؤمنون';
+      position: absolute;
+      bottom: 5px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.7);
+      font-weight: 400;
     }
 
     .student-list {
@@ -82,42 +121,72 @@
       margin: 0;
       padding: 0;
       overflow-y: auto;
+      max-height: calc(100vh - 80px);
     }
 
     .student-list li {
       padding: 1.5rem var(--gap);
       cursor: pointer;
-      transition: all 0.3s ease;
-      background: rgba(135, 182, 181, 0.15);
-      border-bottom: 1px solid rgba(42, 95, 94, 0.1);
+      transition: var(--transition);
+      background: rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
       position: relative;
+      color: #fff;
+      font-weight: 500;
     }
 
     .student-list li:hover {
-      background: rgba(42, 95, 94, 0.2);
-      padding-right: 2rem;
+      background: rgba(255, 255, 255, 0.15);
+      padding-right: 2.5rem;
     }
 
     .student-list li::before {
+      content: '﴾';
+      position: absolute;
+      right: 1rem;
+      color: var(--gold);
+      opacity: 0.7;
+      font-size: 1.5rem;
+      font-family: 'Lateef', serif;
+      transition: var(--transition);
+    }
+
+    .student-list li::after {
       content: '﴿';
       position: absolute;
-      right: 0.5rem;
-      color: var(--primary);
-      opacity: 0.5;
-      font-size: 1.2rem;
+      left: 1rem;
+      color: var(--gold);
+      opacity: 0;
+      font-size: 1.5rem;
+      font-family: 'Lateef', serif;
+      transition: var(--transition);
+    }
+
+    .student-list li:hover::after {
+      opacity: 0.7;
+      left: 1.5rem;
     }
 
     .student-list li.active {
-      background: var(--primary);
-      color: #fff;
+      background: linear-gradient(to right, rgba(26, 95, 90, 0.8), var(--primary-dark));
+      color: var(--gold-light);
       font-weight: 600;
-      box-shadow: inset 4px 0 0 rgba(255, 255, 255, 0.3);
+      box-shadow: inset 5px 0 0 var(--gold);
+      padding-right: 2.5rem;
     }
 
+    .student-list li.active::before,
+    .student-list li.active::after {
+      opacity: 1;
+      color: var(--gold-light);
+    }
+
+    /* المحتوى الرئيسي */
     .main {
       flex: 1;
       padding: var(--gap);
-      background: linear-gradient(to left, rgba(255,255,255,0.8), rgba(255,255,255,0.4));
+      background: linear-gradient(to left, rgba(255,255,255,0.93), rgba(255,255,255,0.85));
+      box-shadow: -5px 0 15px rgba(0,0,0,0.1);
     }
 
     .form-section,
@@ -126,58 +195,74 @@
       background: var(--secondary);
       border-radius: var(--radius);
       padding: var(--gap);
-      box-shadow: 0 2px 12px rgba(42, 95, 94, 0.1);
+      box-shadow: 0 5px 15px rgba(26, 95, 90, 0.1);
       margin-bottom: var(--gap);
-      border: 1px solid rgba(42, 95, 94, 0.1);
-      backdrop-filter: blur(3px);
+      border: 1px solid rgba(26, 95, 90, 0.1);
+      backdrop-filter: blur(5px);
+      transition: var(--transition);
+    }
+
+    .form-section:hover,
+    .stats:hover,
+    .ranking-section:hover {
+      box-shadow: 0 8px 20px rgba(26, 95, 90, 0.15);
+      transform: translateY(-2px);
     }
 
     h3 {
       margin: 0 0 var(--gap);
-      font-weight: 600;
-      color: var(--primary);
+      font-weight: 700;
+      color: var(--primary-dark);
       position: relative;
-      padding-right: 1.5rem;
+      padding-right: 2rem;
+      font-size: 1.5rem;
+      font-family: 'Lateef', serif;
     }
 
-    h3::after {
+    h3::before {
       content: '';
       position: absolute;
       right: 0;
-      bottom: -0.5rem;
-      width: 50px;
-      height: 2px;
-      background: var(--primary);
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.5rem;
+      height: 1.5rem;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%231a5f5a"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1.06 13.54L7.4 12l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41-5.64 5.66z"/></svg>') center/contain no-repeat;
     }
 
     label {
       display: block;
-      margin-top: 0.5rem;
-      font-weight: 500;
+      margin-top: 1rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      position: relative;
     }
 
     select,
     input[type="number"] {
-      width: 90%;
-      padding: 0.5rem;
-      margin-top: 0.3rem;
-      border: 1px solid rgba(42, 95, 94, 0.3);
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.7);
-      transition: all 0.3s ease;
+      width: 100%;
+      padding: 0.7rem;
+      margin-top: 0.5rem;
+      border: 1px solid rgba(26, 95, 90, 0.3);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.9);
+      transition: var(--transition);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1rem;
     }
 
     select:focus,
     input[type="number"]:focus {
       border-color: var(--primary);
       outline: none;
-      box-shadow: 0 0 0 2px rgba(42, 95, 94, 0.2);
+      box-shadow: 0 0 0 3px rgba(26, 95, 90, 0.2);
     }
 
     input[type="checkbox"] {
-      transform: scale(1.2);
+      transform: scale(1.3);
       margin-left: 0.5rem;
       accent-color: var(--primary);
+      cursor: pointer;
     }
 
     .grid-4 {
@@ -192,103 +277,420 @@
 
     .grid-4 > div {
       flex: 1;
-      min-width: 200px;
-      background: rgba(234, 255, 234, 0.3);
+      min-width: 220px;
+      background: rgba(255, 255, 255, 0.7);
       padding: var(--gap);
       border-radius: var(--radius);
-      border: 1px solid rgba(42, 95, 94, 0.1);
+      border: 1px solid rgba(26, 95, 90, 0.1);
+      box-shadow: 0 2px 5px rgba(26, 95, 90, 0.05);
+      transition: var(--transition);
+    }
+
+    .grid-4 > div:hover {
+      box-shadow: 0 5px 10px rgba(26, 95, 90, 0.1);
+      transform: translateY(-3px);
     }
 
     .container-group {
       margin-top: var(--gap);
       display: grid;
       gap: var(--gap);
-      background: rgba(234, 255, 234, 0.3);
+      background: rgba(255, 255, 255, 0.6);
       padding: var(--gap);
       border-radius: var(--radius);
-      border: 1px solid rgba(42, 95, 94, 0.1);
+      border: 1px solid rgba(26, 95, 90, 0.1);
     }
 
     .container-group .row {
-      background: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.8);
       padding: var(--gap);
       border-radius: var(--radius);
-      border: 1px solid rgba(42, 95, 94, 0.1);
-    }
-
-    .row {
+      border: 1px solid rgba(26, 95, 90, 0.1);
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 0.5rem;
-      margin-top: 0.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 0.8rem;
+      align-items: center;
     }
 
     .stat-item {
-      background: rgba(255, 255, 255, 0.7);
-      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 1rem;
       border-radius: var(--radius);
-      margin: 0.5rem 0;
-      box-shadow: 0 1px 4px var(--shadow);
-      border-left: 3px solid var(--primary);
+      margin: 0.8rem 0;
+      box-shadow: 0 2px 5px rgba(26, 95, 90, 0.1);
+      border-left: 4px solid var(--primary);
+      transition: var(--transition);
+    }
+
+    .stat-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 10px rgba(26, 95, 90, 0.15);
+    }
+
+    .stat-item strong {
+      color: var(--primary-dark);
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      font-family: 'Lateef', serif;
     }
 
     button {
       margin-top: var(--gap);
-      padding: 0.7rem 1.5rem;
-      background: var(--primary);
-      color: #fff;
+      padding: 0.9rem 2rem;
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
+      color: white;
       border: none;
-      border-radius: var(--radius);
+      border-radius: 50px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 5px rgba(42, 95, 94, 0.2);
+      transition: var(--transition);
+      box-shadow: 0 4px 10px rgba(26, 95, 90, 0.3);
+      position: relative;
+      overflow: hidden;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+      transition: var(--transition);
     }
 
     button:hover {
-      background: var(--primary-light);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(42, 95, 94, 0.3);
+      background: linear-gradient(to right, var(--primary-light), var(--primary));
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(26, 95, 90, 0.4);
+    }
+
+    button:hover::before {
+      left: 100%;
     }
 
     .result {
-      font-size: 2rem;
-      margin-top: var(--gap);
+      font-size: 2.5rem;
+      margin: 1.5rem 0;
       font-weight: 700;
       text-align: center;
-      color: var(--primary);
-      text-shadow: 0 2px 3px rgba(42, 95, 94, 0.2);
+      color: var(--primary-dark);
+      text-shadow: 0 2px 3px rgba(26, 95, 90, 0.2);
+      font-family: 'Lateef', serif;
+      position: relative;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: var(--radius);
+      border: 1px solid rgba(26, 95, 90, 0.1);
+    }
+
+    .result::before,
+    .result::after {
+      content: '✿';
+      position: absolute;
+      color: var(--gold);
+      font-size: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .result::before {
+      right: 1rem;
+    }
+
+    .result::after {
+      left: 1rem;
     }
 
     table {
       width: 100%;
-      border-collapse: collapse;
-      background: rgba(255, 255, 255, 0.8);
-      box-shadow: 0 1px 10px rgba(42, 95, 94, 0.1);
+      border-collapse: separate;
+      border-spacing: 0;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 1px 10px rgba(26, 95, 90, 0.1);
+      border-radius: var(--radius);
+      overflow: hidden;
     }
 
     th,
     td {
-      padding: 0.5rem;
-      border: 1px solid rgba(42, 95, 94, 0.2);
+      padding: 1rem;
+      border: 1px solid rgba(26, 95, 90, 0.1);
       text-align: center;
+      transition: var(--transition);
     }
 
     th {
-      background: rgba(42, 95, 94, 0.7);
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
       color: white;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
     }
 
     tr:nth-child(even) {
-      background: rgba(42, 95, 94, 0.05);
+      background: rgba(26, 95, 90, 0.03);
     }
 
     tr:hover {
-      background: rgba(42, 95, 94, 0.1);
+      background: rgba(26, 95, 90, 0.08);
+    }
+
+    tr:hover td {
+      transform: scale(1.02);
+    }
+
+    /* تأثيرات خاصة للمراكز الأولى */
+    .first-place {
+      background: linear-gradient(to right, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05)) !important;
+    }
+
+    .first-place td:first-child {
+      position: relative;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .first-place td:first-child::before {
+      content: '👑';
+      position: absolute;
+      left: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .second-place {
+      background: rgba(192, 192, 192, 0.05) !important;
+    }
+
+    .second-place td:first-child {
+      color: #c0c0c0;
+      font-weight: 600;
+    }
+
+    .third-place {
+      background: rgba(205, 127, 50, 0.05) !important;
+    }
+
+    .third-place td:first-child {
+      color: #cd7f32;
+      font-weight: 600;
+    }
+
+    /* تأثيرات إيمانية */
+    .aya-box {
+      background: rgba(26, 95, 90, 0.1);
+      padding: 1rem;
+      border-radius: var(--radius);
+      margin: 1rem 0;
+      border-right: 4px solid var(--primary);
+      font-family: 'Lateef', serif;
+      font-size: 1.3rem;
+      color: var(--primary-dark);
+      text-align: center;
+      line-height: 2;
+      position: relative;
+    }
+
+    .aya-box::before,
+    .aya-box::after {
+      content: '﴾﴿';
+      position: absolute;
+      color: var(--gold);
+      font-size: 1.2rem;
+      opacity: 0.5;
+    }
+
+    .aya-box::before {
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+
+    .aya-box::after {
+      bottom: 0.5rem;
+      left: 0.5rem;
+    }
+
+    /* رسالة تحفيزية */
+    .motivation {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 1rem;
+      border-radius: var(--radius);
+      margin: 1rem 0;
+      border-left: 4px solid var(--gold);
+      font-family: 'Lateef', serif;
+      font-size: 1.2rem;
+      color: var(--primary-dark);
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+    }
+
+    /* زر التصدير */
+    #exportExcel {
+      background: linear-gradient(to right, #2d8c85, #1a5f5a);
+    }
+
+    #exportExcel:hover {
+      background: linear-gradient(to right, #3aa79f, #2d8c85);
+    }
+
+    /* رسالة عند التصدير */
+    .export-message {
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      z-index: 1000;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .export-message.show {
+      opacity: 1;
+      animation: fadeInOut 3s ease-in-out;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    }
+
+    /* تأثيرات للعناصر الديناميكية */
+    .animate__animated {
+      animation-duration: 1s;
+    }
+
+    /* تصميم متجاوب */
+    @media (max-width: 992px) {
+      .app {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+      }
+      .student-list {
+        max-height: 300px;
+      }
+      .grid-4 > div {
+        min-width: 100%;
+      }
     }
   </style>
-  <script defer>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h2>نظام التقييم القرآني</h2>
+      <ul class="student-list" id="studentList"></ul>
+    </aside>
+    <main class="main">
+      <section class="form-section animate__animated animate__fadeIn">
+        <h3 id="currentName">اختر طالبًا</h3>
+        
+        <div class="aya-box">
+          وَقَالَ الَّذِينَ كَفَرُوا لَوْلَا نُزِّلَ عَلَيْهِ الْقُرْآنُ جُمْلَةً وَاحِدَةً كَذَٰلِكَ لِنُثَبِّتَ بِهِ فُؤَادَكَ وَرَتَّلْنَاهُ تَرْتِيلًا
+        </div>
+        
+        <div class="grid-4">
+          <div>
+            <label>الأجزاء الكاملة:</label>
+            <select id="numFull"></select>
+            <div class="container-group" id="fullContainer"></div>
+          </div>
+          <div>
+            <label>الأجزاء الجزئية:</label>
+            <select id="numSub"></select>
+            <div class="container-group" id="subContainer"></div>
+          </div>
+          <div>
+            <label>التسميع الجديد:</label>
+            <select id="numNew"></select>
+            <div class="container-group" id="newContainer"></div>
+          </div>
+          <div>
+            <label>واجب الحفظ:</label>
+            <select id="numHW"></select>
+            <div class="container-group" id="hwContainer"></div>
+          </div>
+        </div>
+        
+        <div class="grid-4">
+          <div>
+            <label>نقاط الأدب:</label>
+            <select id="adab"></select>
+          </div>
+          <div>
+            <label>ساعة الحضور:</label>
+            <select id="time"></select>
+          </div>
+          <div>
+            <label>أحضر المصحف:</label>
+            <input type="checkbox" id="mushaf">
+          </div>
+          <div>
+            <label>التركيز:</label>
+            <select id="focus"></select>
+          </div>
+        </div>
+        
+        <div class="motivation animate__animated animate__pulse animate__infinite">
+          "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ"
+        </div>
+        
+        <div style="display: flex; gap: var(--gap); flex-wrap: wrap;">
+          <button id="calculate">احسب النقاط</button>
+          <button id="showRanking">عرض الترتيب</button>
+          <button id="exportExcel">تحميل إكسل</button>
+        </div>
+        
+        <div class="result" id="result">– %</div>
+      </section>
+      
+      <section class="stats" id="statsSection" style="display: none;">
+        <h3>الإحصائيات</h3>
+        <div id="statsList"></div>
+      </section>
+      
+      <section class="ranking-section animate__animated animate__fadeIn" id="rankingSection" style="display: none;">
+        <h3>ترتيب الطلاب</h3>
+        <div class="aya-box">
+          إِنَّ هَٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ وَيُبَشِّرُ الْمُؤْمِنِينَ الَّذِينَ يَعْمَلُونَ الصَّالِحَاتِ أَنَّ لَهُمْ أَجْرًا كَبِيرًا
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>المركز</th>
+              <th>الاسم</th>
+              <th>النسبة (%)</th>
+            </tr>
+          </thead>
+          <tbody id="rankingBody"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+  
+  <div class="export-message" id="exportMessage">تم تصدير البيانات بنجاح</div>
+  
+  <script>
     document.addEventListener('DOMContentLoaded', () => {
       const diff = {
         1: 2, 2: 0.8, 3: 1.5, 4: 1.5, 5: 1.5, 6: 1.5, 7: 0.8,
@@ -314,6 +716,7 @@
 
       const timeSel = document.getElementById('time');
       const ul = document.getElementById('studentList');
+      const exportMessage = document.getElementById('exportMessage');
 
       function fillSelect(el, from, to) {
         for (let i = from; i <= to; i++) {
@@ -409,7 +812,7 @@
         const stats = document.getElementById('statsList');
         stats.innerHTML = '';
         const greenBox = (title, content) => 
-          `<div class="stat-item"><strong>${title}</strong><br>${content}</div>`;
+          `<div class="stat-item animate__animated animate__fadeIn"><strong>${title}</strong><br>${content}</div>`;
 
         stats.innerHTML += greenBox('نقاط الأدب', d.adab);
         stats.innerHTML += greenBox('التأخير', `${d.late} دقيقة (خصم: ${d.delay.toFixed(2)})`);
@@ -493,6 +896,10 @@
         
         arr.forEach((s, i) => {
           const tr = document.createElement('tr');
+          if (i === 0) tr.classList.add('first-place');
+          else if (i === 1) tr.classList.add('second-place');
+          else if (i === 2) tr.classList.add('third-place');
+          
           tr.innerHTML = `
             <td>${i + 1}</td>
             <td>${s.name}</td>
@@ -505,7 +912,7 @@
 
       document.getElementById('exportExcel').addEventListener('click', () => {
         const students = Object.entries(studentData)
-          .filter(([_, data]) => data.total)
+          .filter(([, data]) => data.total)
           .map(([name, data]) => ({
             الاسم: name,
             'نقاط الأدب': data.adab,
@@ -521,83 +928,15 @@
         const ws = XLSX.utils.json_to_sheet(students);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "الطلاب");
-        XLSX.writeFile(wb, "إحصائيات_الطلاب.xlsx");
+        XLSX.writeFile(wb, "إحصائيات_الطلاب_رجال_مؤمنون.xlsx");
+        
+        // عرض رسالة التصدير
+        exportMessage.classList.add('show');
+        setTimeout(() => {
+          exportMessage.classList.remove('show');
+        }, 3000);
       });
     });
   </script>
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <h2>الطلاب</h2>
-      <ul class="student-list" id="studentList"></ul>
-    </aside>
-    <main class="main">
-      <section class="form-section">
-        <h3 id="currentName">اختر طالبًا</h3>
-        <div class="grid-4">
-          <div>
-            <label>الأجزاء الكاملة:</label>
-            <select id="numFull"></select>
-            <div class="container-group" id="fullContainer"></div>
-          </div>
-          <div>
-            <label>الأجزاء الجزئية:</label>
-            <select id="numSub"></select>
-            <div class="container-group" id="subContainer"></div>
-          </div>
-          <div>
-            <label>التسميع الجديد:</label>
-            <select id="numNew"></select>
-            <div class="container-group" id="newContainer"></div>
-          </div>
-          <div>
-            <label>واجب الحفظ:</label>
-            <select id="numHW"></select>
-            <div class="container-group" id="hwContainer"></div>
-          </div>
-        </div>
-        <div class="grid-4">
-          <div>
-            <label>نقاط الأدب:</label>
-            <select id="adab"></select>
-          </div>
-          <div>
-            <label>ساعة الحضور:</label>
-            <select id="time"></select>
-          </div>
-          <div>
-            <label>أحضر المصحف:</label>
-            <input type="checkbox" id="mushaf">
-          </div>
-          <div>
-            <label>التركيز:</label>
-            <select id="focus"></select>
-          </div>
-        </div>
-        <button id="calculate">احسب النقاط</button>
-        <button id="showRanking">عرض الترتيب</button>
-        <button id="exportExcel">تحميل إكسل</button>
-        <div class="result" id="result">– %</div>
-      </section>
-      <section class="stats" id="statsSection" style="display: none;">
-        <h3>الإحصائيات</h3>
-        <div id="statsList"></div>
-      </section>
-      <section class="ranking-section" id="rankingSection" style="display: none;">
-        <h3>ترتيب الطلاب</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>المركز</th>
-              <th>الاسم</th>
-              <th>النسبة (%)</th>
-            </tr>
-          </thead>
-          <tbody id="rankingBody"></tbody>
-        </table>
-      </section>
-    </main>
-  </div>
 </body>
 </html>
